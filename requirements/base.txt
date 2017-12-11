@@ -1,0 +1,5 @@
+Django==1.11.3
+python-vlc
+psycopg2
+Pillow
+Unipath
