@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+<body>
+    <div style="width:30%; height:700px; background:#0080FF; float:left">
+        <div>
+            <a href="{% url 'usuarios:logout' %}">Logout</a>
+            <h2>Bienvenido</h2>
+            {% block usuario %}{% endblock usuario %}
+        </div>
+        <nav>
+            <ul>
+                <li><a href="">Agregar radio</a></li>
+                <li><a href="">Listar radios</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div style="width:70%; float:right">
+        {% block content %}{% endblock content %}
+    </div>
+    
+</body>
+</html>

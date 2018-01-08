@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es-PE">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+<body>
+    <nav>
+        <a href="">Quienes Somos</a>
+        <a href="">Contactanos</a>
+        <div style="float:right">
+            <a href="{% url 'usuarios:login' %}">Login</a>
+        </div>
+    </nav>
+    {% block content %}{% endblock content %}
+</body>
+</html>

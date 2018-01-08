@@ -1,0 +1,15 @@
+{% extends "usuarios/base_login.html" %}
+
+{% block title %}Login{% endblock title %}
+{% block content %}
+    <div style="width:30%; height:700px; background:grey; float:left">
+        <h2>Inicio de Sesión</h2>
+        <form action="" method="POST">{% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="login" />
+        </form>
+    </div>
+    <div style="width:70%; float:right">
+        
+    </div>
+{% endblock content %}

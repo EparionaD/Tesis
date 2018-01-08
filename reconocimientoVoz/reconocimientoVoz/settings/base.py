@@ -1,6 +1,7 @@
-import os
+from unipath import Path
+from django.db import models
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).ancestor(3)
 
 
 SECRET_KEY = 'xi_(_two$0l#@9$5h7k1jw#e)v49f&_td%j1@08mb*q_j_$p&t'
@@ -21,9 +22,14 @@ DJANGO_APPS = [
     'django.contrib.staticfiles',
 ]
 
-LOCAL_APPS = []
+LOCAL_APPS = [
+    'apps.usuarios',
+    'apps.radio',
+]
 
-THIRD_PARTY_APPS = []
+THIRD_PARTY_APPS = [
+    'multiselectfield',
+]
 
 INSTALLED_APPS = DJANGO_APPS + LOCAL_APPS + THIRD_PARTY_APPS
 
@@ -39,10 +45,14 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'reconocimientoVoz.urls'
 
+LOGIN_URL = 'usuarios:login'
+
+LOGIN_REDIRECT_URL = 'radio:radioindex'
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR.child('templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -84,3 +94,5 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
+
+AUTH_USER_MODEL = 'usuarios.Usuario'

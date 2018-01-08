@@ -3,3 +3,4 @@ python-vlc
 psycopg2
 Pillow
 Unipath
+django-multiselectfield
