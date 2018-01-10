@@ -54,10 +54,12 @@ print(obtener_tiempo_programa())
 
 def obtener_web_programa():
 
+    url = ProgramasRadiales.objects.all().values('radios__web')
+
     lista = []
 
-    for dat in datos:
-        c = dat.get('radios_id')
+    for dat in url:
+        c = dat.get('radios__web')
         lista += [c]
 
     return lista
