@@ -1,7 +1,6 @@
 from django.db import models
 from django.conf import settings
 from multiselectfield import MultiSelectField
-#import calendar
 
 class Radio(models.Model):
     usuario = models.ManyToManyField(settings.AUTH_USER_MODEL)
@@ -15,21 +14,16 @@ class Radio(models.Model):
     def __str__(self):
         return self.radio
 
-"""class ProgramasRadiales(models.Model):
-    rango = ((m,m) for m in calendar.day_name[1:])
-    nombre = models.CharField('Nombre del programa', max_length=60)
-    dias = models.CharField(max_length=10, choices = rango)"""
-
 class ProgramasRadiales(models.Model):
 
     rango = (
-            ('lun', 'Lunes'),
-            ('mar', 'Martes'),
-            ('mie', 'Miercoles'),
-            ('jue', 'Jueves'),
-            ('vie', 'Viernes'),
-            ('sab', 'Sábado'),
-            ('dom', 'Domingo')
+            ('1', 'Lunes'),
+            ('2', 'Martes'),
+            ('3', 'Miercoles'),
+            ('4', 'Jueves'),
+            ('5', 'Viernes'),
+            ('6', 'Sábado'),
+            ('0', 'Domingo')
         )
 
     nombre = models.CharField('Nombre del programa de radio', max_length=60)

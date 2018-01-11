@@ -9,5 +9,5 @@ class RadioAdmin(admin.ModelAdmin):
 
 @admin.register(ProgramasRadiales)
 class ProgramasAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'dias')
+    list_display = ('nombre', 'radios')
     search_fields = ('nombre',)

@@ -10,17 +10,6 @@ class IndexRadio(LoginRequiredMixin, TemplateView):
     template_name = 'radio/radio.html'
 
 
-"""class GrabarProgramaRadial():
-
-    datos = ProgramasRadiales.objects.filter(id='1').values()
-
-    def obtener_nombre_programa():
-        for dat in datos:
-            c = dat.get('nombre')
-            nombre_programa = c.replace(' ','')
-            print (nombre_programa)
-
-            return nombre_programa"""
 
 datos = ProgramasRadiales.objects.all().values()
 
@@ -65,3 +54,29 @@ def obtener_web_programa():
     return lista
 
 print(obtener_web_programa())
+
+def comparar_fechas_horas():
+
+    datos = ProgramasRadiales.objects.all()
+
+    tiempo = time.time()
+
+    dia = time.gmtime(tiempo)
+
+    dia_actual = dia.tm_wday
+
+    hora = time.strftime('%H:%M')
+
+    for dato in datos:
+        hora_pro = (dato.inicio).strftime('%H:%M') #esta es la forma correcta de darle formato.
+
+        if hora_pro == hora:
+            for x in dato.dias:
+                if str(dia_actual) == str(x):
+                    print('Logica que me falta desarrollar')
+                else:
+                    print('No hace nada')
+        else:
+            print('Todavía no es la hora')
+
+print(comparar_fechas_horas())
