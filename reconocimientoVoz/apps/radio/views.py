@@ -13,7 +13,9 @@ class IndexRadio(LoginRequiredMixin, TemplateView):
 
 datos = ProgramasRadiales.objects.all().values()
 
-def obtener_nombre_programa():
+def obtener_nombre_programa(codigo):
+
+    datos = ProgramasRadiales.objects.filter(id=codigo).values()
 
     lista = []
 
@@ -28,7 +30,7 @@ def obtener_nombre_programa():
 
     return lista
 
-print(obtener_nombre_programa())
+#print(obtener_nombre_programa())
 
 def obtener_tiempo_programa():
     lista = []
@@ -73,10 +75,13 @@ def comparar_fechas_horas():
         if hora_pro == hora:
             for x in dato.dias:
                 if str(dia_actual) == str(x):
-                    print('Logica que me falta desarrollar') #insertar la otra funcion o llamarla
+                    #print('Logica que me falta desarrollar') #insertar la otra funcion o llamarla
+                    codigo = dato.id
+                    nombre_archivo = obtener_nombre_programa(codigo)
+                    print(nombre_archivo)
                 else:
                     print('No hace nada')
         else:
-            print(datos)
+            print('No es el momento')
 
 print(comparar_fechas_horas())
