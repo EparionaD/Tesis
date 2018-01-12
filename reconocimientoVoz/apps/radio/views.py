@@ -57,7 +57,7 @@ print(obtener_web_programa())
 
 def comparar_fechas_horas():
 
-    datos = ProgramasRadiales.objects.all()
+    datos1 = ProgramasRadiales.objects.all()
 
     tiempo = time.time()
 
@@ -67,16 +67,16 @@ def comparar_fechas_horas():
 
     hora = time.strftime('%H:%M')
 
-    for dato in datos:
+    for dato in datos1:
         hora_pro = (dato.inicio).strftime('%H:%M') #esta es la forma correcta de darle formato.
 
         if hora_pro == hora:
             for x in dato.dias:
                 if str(dia_actual) == str(x):
-                    print('Logica que me falta desarrollar')
+                    print('Logica que me falta desarrollar') #insertar la otra funcion o llamarla
                 else:
                     print('No hace nada')
         else:
-            print('Todavía no es la hora')
+            print(datos)
 
 print(comparar_fechas_horas())
