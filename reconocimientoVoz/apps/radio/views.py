@@ -4,6 +4,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Radio, ProgramasRadiales
 
 import time
+import vlc
+import sys
 
 class IndexRadio(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -17,7 +19,7 @@ def obtener_nombre_programa(codigo):
 
     datos = ProgramasRadiales.objects.filter(id=codigo).values()
 
-    lista = []
+    #lista = []
 
     for dat in datos:
         c = dat.get('nombre')
@@ -26,38 +28,53 @@ def obtener_nombre_programa(codigo):
         hora = h.strftime('%H:%M')
         fecha_programa = time.strftime('%d-%m-%y')
         completo = nombre_programa+'-'+fecha_programa+'-'+hora
-        lista += [completo]
+        #lista += [completo]
 
-    return lista
+    return completo
 
 #print(obtener_nombre_programa())
 
-def obtener_tiempo_programa():
-    lista = []
+def obtener_tiempo_programa(codigo):
+
+    datos = ProgramasRadiales.objects.filter(id=codigo).values()
+    #lista = []
 
     for dat in datos:
         c = dat.get('duracion')
-        lista += [c]
+        #lista += [c]
 
-    return lista
+    return c
 
-print(obtener_tiempo_programa())
+#print(obtener_tiempo_programa())
 
-def obtener_web_programa():
+def obtener_web_programa(codigo):
 
-    url = ProgramasRadiales.objects.all().values('radios__web')
+    url = ProgramasRadiales.objects.filter(id=codigo).values('radios__web')
 
-    lista = []
+    #lista = []
 
     for dat in url:
         c = dat.get('radios__web')
-        lista += [c]
+        #lista += [c]
 
-    return lista
+    return c
 
-print(obtener_web_programa())
+#print(obtener_web_programa())
 
-def comparar_fechas_horas():
+def grabar_audio(nombre, stream, tiempo):
+
+    convertidor = "--sout=#transcode{acodec=flac,ab=128,channels=1,samplerate=32000}:std{access=file,mux=raw,dst='/home/eparionad/Descargas/ProyectoPython/%s.flac'} --run-time=%s --stop-time=%s" % (nombre, tiempo, tiempo)
+    instancia = vlc.Instance(convertidor)
+    reproductor = instancia.media_player_new()
+    medios = instancia.media_new(stream)
+    medios.get_mrl()
+    reproductor.set_media(medios)
+    reproductor.play()
+    time.sleep(tiempo)
+
+    return
+
+def programa_principal():
 
     datos1 = ProgramasRadiales.objects.all()
 
@@ -70,18 +87,27 @@ def comparar_fechas_horas():
     hora = time.strftime('%H:%M')
 
     for dato in datos1:
-        hora_pro = (dato.inicio).strftime('%H:%M') #esta es la forma correcta de darle formato.
+        hora_pro = (dato.inicio).strftime('%H:%M')
 
         if hora_pro == hora:
             for x in dato.dias:
                 if str(dia_actual) == str(x):
-                    #print('Logica que me falta desarrollar') #insertar la otra funcion o llamarla
+
                     codigo = dato.id
                     nombre_archivo = obtener_nombre_programa(codigo)
+                    url = obtener_web_programa(codigo)
+                    inicio_pro = obtener_tiempo_programa(codigo)
+                    grabar_audio(nombre_archivo, url, inicio_pro)
                     print(nombre_archivo)
+                    print(url)
+                    print(inicio_pro)
                 else:
                     print('No hace nada')
+
         else:
             print('No es el momento')
 
-print(comparar_fechas_horas())
+    return
+
+#print(comparar_fechas_horas())
+programa_principal()

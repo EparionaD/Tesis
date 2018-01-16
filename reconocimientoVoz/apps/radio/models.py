@@ -17,13 +17,13 @@ class Radio(models.Model):
 class ProgramasRadiales(models.Model):
 
     rango = (
-            ('1', 'Lunes'),
-            ('2', 'Martes'),
-            ('3', 'Miercoles'),
-            ('4', 'Jueves'),
-            ('5', 'Viernes'),
-            ('6', 'Sábado'),
-            ('0', 'Domingo')
+            ('0', 'Lunes'),
+            ('1', 'Martes'),
+            ('2', 'Miercoles'),
+            ('3', 'Jueves'),
+            ('4', 'Viernes'),
+            ('5', 'Sábado'),
+            ('6', 'Domingo')
         )
 
     nombre = models.CharField('Nombre del programa de radio', max_length=60)
