@@ -13,7 +13,7 @@ class IndexRadio(LoginRequiredMixin, TemplateView):
 
 
 
-datos = ProgramasRadiales.objects.all().values()
+#datos = ProgramasRadiales.objects.all().values()
 
 def obtener_nombre_programa(codigo):
 
@@ -78,8 +78,8 @@ def programa_principal():
 
     #tiempo = time.time()
 
-    #dia = time.gmtime(tiempo)
-    dia = time.localtime()
+    dia = time.gmtime()
+    #dia = time.localtime()
 
     dia_actual = dia.tm_wday
 
