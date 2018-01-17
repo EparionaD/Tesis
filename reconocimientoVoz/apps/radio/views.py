@@ -72,15 +72,14 @@ def grabar_audio(nombre, stream, tiempo):
     reproductor.play()
     time.sleep(tiempo)
 
-    return
-
 def programa_principal():
 
     datos1 = ProgramasRadiales.objects.all()
 
-    tiempo = time.time()
+    #tiempo = time.time()
 
-    dia = time.gmtime(tiempo)
+    #dia = time.gmtime(tiempo)
+    dia = time.localtime()
 
     dia_actual = dia.tm_wday
 
@@ -97,7 +96,7 @@ def programa_principal():
                     nombre_archivo = obtener_nombre_programa(codigo)
                     url = obtener_web_programa(codigo)
                     inicio_pro = obtener_tiempo_programa(codigo)
-                    grabar_audio(nombre_archivo, url, inicio_pro)
+                    audio = grabar_audio(nombre_archivo, url, inicio_pro)
                     print(nombre_archivo)
                     print(url)
                     print(inicio_pro)
@@ -107,7 +106,5 @@ def programa_principal():
         else:
             print('No es el momento')
 
-    return
-
-#print(comparar_fechas_horas())
+#print(programa_principal())
 programa_principal()
