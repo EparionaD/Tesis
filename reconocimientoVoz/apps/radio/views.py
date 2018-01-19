@@ -62,9 +62,9 @@ def obtener_web_programa(codigo):
 
 #print(obtener_web_programa())
 
-def grabar_audio(nombre, stream, tiempo):
+def grabar_audio(carpeta, nombre, stream, tiempo):
 
-    convertidor = "--sout=#transcode{acodec=flac,ab=128,channels=1,samplerate=32000}:std{access=file,mux=raw,dst='/home/eparionad/Descargas/ProyectoPython/%s.flac'} --run-time=%s --stop-time=%s" % (nombre, tiempo, tiempo)
+    convertidor = "--sout=#transcode{acodec=flac,ab=128,channels=1,samplerate=32000}:std{access=file,mux=raw,dst='%s/%s.flac'} --run-time=%s --stop-time=%s" % (carpeta, nombre, tiempo, tiempo)
     instancia = vlc.Instance(convertidor)
     reproductor = instancia.media_player_new()
     medios = instancia.media_new(stream)
@@ -75,7 +75,14 @@ def grabar_audio(nombre, stream, tiempo):
 
 def crear_carpetas(nombre):
     
-    carpeta = os.path.join(nombre, )
+    dia = time.gmtime()
+    fecha = time.strftime('%d-%m-%Y', dia)
+    carpeta = '/home/eparionad/Descargas/%s' % os.path.join(nombre, fecha)
+
+    if not os.path.exists(carpeta):
+        os.makedirs(carpeta)
+
+    return carpeta
 
 
 def programa_principal():
@@ -102,7 +109,8 @@ def programa_principal():
                     nombre_archivo = obtener_nombre_programa(codigo)
                     url = obtener_web_programa(codigo)
                     inicio_pro = obtener_tiempo_programa(codigo)
-                    audio = grabar_audio(nombre_archivo, url, inicio_pro)
+                    carpeta = crear_carpetas(nombre_archivo)
+                    audio = grabar_audio(carpeta, nombre_archivo, url, inicio_pro)
                     print(nombre_archivo)
                     print(url)
                     print(inicio_pro)
