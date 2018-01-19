@@ -6,6 +6,7 @@ from .models import Radio, ProgramasRadiales
 import time
 import vlc
 import sys
+import os
 
 class IndexRadio(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -71,6 +72,11 @@ def grabar_audio(nombre, stream, tiempo):
     reproductor.set_media(medios)
     reproductor.play()
     time.sleep(tiempo)
+
+def crear_carpetas(nombre):
+    
+    carpeta = os.path.join(nombre, )
+
 
 def programa_principal():
 
