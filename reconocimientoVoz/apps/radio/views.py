@@ -7,6 +7,7 @@ import time
 import vlc
 import sys
 import os
+import threading
 
 class IndexRadio(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -28,7 +29,7 @@ def obtener_nombre_programa(codigo):
         h = dat.get('inicio')
         hora = h.strftime('%H:%M')
         fecha_programa = time.strftime('%d-%m-%y')
-        completo = nombre_programa+'-'+fecha_programa+'-'+hora
+        completo = str(codigo)+'-'+nombre_programa+'-'+fecha_programa+'-'+hora
         #lista += [completo]
 
     return completo
@@ -89,7 +90,6 @@ def programa_principal():
 
     datos1 = ProgramasRadiales.objects.all()
 
-    #tiempo = time.time()
 
     dia = time.gmtime()
     #dia = time.localtime()
@@ -106,14 +106,18 @@ def programa_principal():
                 if str(dia_actual) == str(x):
 
                     codigo = dato.id
+                    nc = dato.nombre
+                    nombre_carpeta = nc.replace(' ', '')
                     nombre_archivo = obtener_nombre_programa(codigo)
                     url = obtener_web_programa(codigo)
                     inicio_pro = obtener_tiempo_programa(codigo)
-                    carpeta = crear_carpetas(nombre_archivo)
-                    audio = grabar_audio(carpeta, nombre_archivo, url, inicio_pro)
+                    carpeta = crear_carpetas(nombre_carpeta)
+                    audio = threading.Thread(target=grabar_audio, args=(carpeta, nombre_archivo, url, inicio_pro))
+                    audio.start()
                     print(nombre_archivo)
                     print(url)
                     print(inicio_pro)
+                    print(nombre_carpeta)
                 else:
                     print('No hace nada')
 
