@@ -78,7 +78,7 @@ def crear_carpetas(nombre):
     
     dia = time.gmtime()
     fecha = time.strftime('%d-%m-%Y', dia)
-    carpeta = '/home/eparionad/Descargas/%s' % os.path.join(nombre, fecha)
+    carpeta = '/home/eparionad/Descargas/%s' % os.path.join(fecha, nombre)
 
     if not os.path.exists(carpeta):
         os.makedirs(carpeta)
@@ -91,8 +91,8 @@ def programa_principal():
     datos1 = ProgramasRadiales.objects.all()
 
 
-    dia = time.gmtime()
-    #dia = time.localtime()
+    #dia = time.gmtime()
+    dia = time.localtime()
 
     dia_actual = dia.tm_wday
 
