@@ -4,3 +4,4 @@ psycopg2
 Pillow
 Unipath
 django-multiselectfield
+google-cloud-speech
