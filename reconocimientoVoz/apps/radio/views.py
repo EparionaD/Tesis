@@ -69,7 +69,7 @@ def obtener_web_programa(codigo):
 
 def grabar_audio(carpeta, nombre, stream, tiempo):
 
-    convertidor = "--sout=#transcode{acodec=flac,ab=128,channels=1,samplerate=16000}:std{access=file,mux=raw,dst='%s/%s.flac'} --run-time=%s --stop-time=%s" % (carpeta, nombre, tiempo, tiempo)
+    convertidor = "--sout=#transcode{acodec=flac,ab=320,channels=1,samplerate=16000}:std{access=file,mux=raw,dst='%s/%s.flac'} --run-time=%s --stop-time=%s" % (carpeta, nombre, tiempo, tiempo)
     instancia = vlc.Instance(convertidor)
     reproductor = instancia.media_player_new()
     medios = instancia.media_new(stream)
@@ -95,8 +95,8 @@ def programa_principal():
     datos1 = ProgramasRadiales.objects.all()
 
 
-    #dia = time.gmtime()
-    dia = time.localtime()
+    dia = time.gmtime()
+    #dia = time.localtime()
 
     dia_actual = dia.tm_wday
 
@@ -115,8 +115,9 @@ def programa_principal():
                     nombre_archivo = obtener_nombre_programa(codigo)
                     url = obtener_web_programa(codigo)
                     inicio_pro = obtener_tiempo_programa(codigo)
+                    duracion_total = inicio_pro * 50
                     carpeta = crear_carpetas(nombre_carpeta)
-                    audio = threading.Thread(target=grabar_audio, args=(carpeta, nombre_archivo, url, inicio_pro))
+                    audio = threading.Thread(target=grabar_audio, args=(carpeta, nombre_archivo, url, duracion_total))
                     audio.start()
                     print(nombre_archivo)
                     print(url)
@@ -138,7 +139,7 @@ def transcribe_file():
     from google.cloud.speech import types
     client = speech.SpeechClient()
 
-    speech_file = '/home/eparionad/Descargas/05-02-2018/MatinalNoticias/2-MatinalNoticias-04-02-18-21:18.flac'
+    speech_file = '/home/eparionad/Descargas/18-02-2018/JuninInformado/3-JuninInformado-18-02-18-15:10.flac'
 
     # [START migration_async_request]
     with io.open(speech_file, 'rb') as audio_file:
@@ -151,17 +152,19 @@ def transcribe_file():
         language_code='es-PE')
 
     # [START migration_async_response]
-    operation = client.recognize(config, audio)
+    operation = client.long_running_recognize(config, audio)
     # [END migration_async_request]
 
     print('Waiting for operation to complete...')
-    #response = operation.result(timeout=90)
+    response = operation.result(timeout=90)
 
     # Each result is for a consecutive portion of the audio. Iterate through
     # them to get the transcripts for the entire audio file.
-    for result in operation.results:
+    for result in response.results:
         # The first alternative is the most likely one for this portion.
-        print('Transcript: {}'.format(result.alternatives[0].transcript))
+        with open('/home/eparionad/Descargas/audio.txt', 'a') as f:
+            f.write(result.alternatives[0].transcript)
+        #print('Transcript: {}'.format(result.alternatives[0].transcript))
     # [END migration_async_response]
 # [END def_transcribe_file]
 
@@ -177,7 +180,7 @@ def enviar_audio():
         nc = dato.nombre
         programa = nc.replace(' ', '')
 
-        ruta_total = os.path.join(ruta_parcial, '05-02-2018', programa)
+        ruta_total = os.path.join(ruta_parcial, '18-02-2018', programa)
 
         for carpetas in os.walk(ruta_total):
             for carpeta in carpetas:
@@ -186,7 +189,7 @@ def enviar_audio():
                         nombre = archivos.replace('flac', 'txt')
                         #print(nombre)
                         if not os.path.exists(os.path.join(ruta_total,nombre)):
-                            #audio_grabado = transcribe_file()
+                            audio_grabado = transcribe_file()
                             print('LLamo a la funcion')
 
                         else:
