@@ -95,8 +95,8 @@ def programa_principal():
     datos1 = ProgramasRadiales.objects.all()
 
 
-    dia = time.gmtime()
-    #dia = time.localtime()
+    #dia = time.gmtime()
+    dia = time.localtime()
 
     dia_actual = dia.tm_wday
 
@@ -139,24 +139,30 @@ def transcribe_file():
     from google.cloud.speech import types
     client = speech.SpeechClient()
 
-    speech_file = '/home/eparionad/Descargas/18-02-2018/JuninInformado/3-JuninInformado-18-02-18-15:10.flac'
+    gcs_uri = 'gs://audiosparareconocimiento/1-Tusnoticias-23-02-18-07:52.flac'
 
     # [START migration_async_request]
-    with io.open(speech_file, 'rb') as audio_file:
-        content = audio_file.read()
+    #with io.open(speech_file, 'rb') as audio_file:
+    #    content = audio_file.read()
 
-    audio = types.RecognitionAudio(content=content)
+    audio = types.RecognitionAudio(uri=gcs_uri)
     config = types.RecognitionConfig(
         encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
         sample_rate_hertz=16000,
         language_code='es-PE')
+
+    """audio = types.RecognitionAudio(content=content)
+    config = types.RecognitionConfig(
+        encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
+        sample_rate_hertz=16000,
+        language_code='es-PE')"""
 
     # [START migration_async_response]
     operation = client.long_running_recognize(config, audio)
     # [END migration_async_request]
 
     print('Waiting for operation to complete...')
-    response = operation.result(timeout=90)
+    response = operation.result(timeout=900)
 
     # Each result is for a consecutive portion of the audio. Iterate through
     # them to get the transcripts for the entire audio file.
@@ -173,14 +179,15 @@ def enviar_audio():
     datos =  ProgramasRadiales.objects.all()
 
     ruta_parcial = '/home/eparionad/Descargas'
-    tiempo = time.gmtime()
+    #tiempo = time.gmtime()
+    tiempo = time.localtime()
     fecha = time.strftime('%d-%m-%Y', tiempo)
 
     for dato in datos:
         nc = dato.nombre
         programa = nc.replace(' ', '')
 
-        ruta_total = os.path.join(ruta_parcial, '18-02-2018', programa)
+        ruta_total = os.path.join(ruta_parcial, '19-02-2018', programa)
 
         for carpetas in os.walk(ruta_total):
             for carpeta in carpetas:
