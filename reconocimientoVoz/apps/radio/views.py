@@ -97,8 +97,8 @@ def programa_principal():
     datos1 = ProgramasRadiales.objects.all()
 
 
-    dia = time.gmtime()
-    #dia = time.localtime()
+    #dia = time.gmtime()
+    dia = time.localtime()
 
     dia_actual = dia.tm_wday
 
@@ -151,11 +151,24 @@ def transcribe_file():
         #content = audio_file.read()
 
     #audio = types.RecognitionAudio(content=content)
+
+    #gcs_uri = 'gs://audiosparareconocimiento/1-Tusnoticias-23-02-18-07:52.flac'
+
+    # [START migration_async_request]
+    #with io.open(speech_file, 'rb') as audio_file:
+    #    content = audio_file.read()
+
     audio = types.RecognitionAudio(uri=gcs_uri)
     config = types.RecognitionConfig(
         encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
         sample_rate_hertz=16000,
         language_code='es-PE')
+
+    """audio = types.RecognitionAudio(content=content)
+    config = types.RecognitionConfig(
+        encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
+        sample_rate_hertz=16000,
+        language_code='es-PE')"""
 
     # [START migration_async_response]
     operation = client.long_running_recognize(config, audio)
@@ -207,7 +220,8 @@ def enviar_audio():
     datos =  ProgramasRadiales.objects.all()
 
     ruta_parcial = '/home/eparionad/Descargas'
-    tiempo = time.gmtime()
+    #tiempo = time.gmtime()
+    tiempo = time.localtime()
     fecha = time.strftime('%d-%m-%Y', tiempo)
 
     for dato in datos:
@@ -215,6 +229,9 @@ def enviar_audio():
         programa = nc.replace(' ', '')
 
         ruta_total = os.path.join(ruta_parcial, '09-03-2018', programa)
+
+        #ruta_total = os.path.join(ruta_parcial, '19-02-2018', programa)
+
 
         for carpetas in os.walk(ruta_total):
             for carpeta in carpetas:
