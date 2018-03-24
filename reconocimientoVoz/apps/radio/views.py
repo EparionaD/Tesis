@@ -10,6 +10,8 @@ import os
 import io
 import threading
 import fnmatch
+import collections
+import unicodedata
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = '/home/eparionad/Dropbox/Tesis/CredencialesApiGoogle/Tesis-59cc7659afbc.json'
 
@@ -115,7 +117,7 @@ def programa_principal():
                     nombre_archivo = obtener_nombre_programa(codigo)
                     url = obtener_web_programa(codigo)
                     inicio_pro = obtener_tiempo_programa(codigo)
-                    duracion_total = inicio_pro * 50
+                    duracion_total = inicio_pro * 60
                     carpeta = crear_carpetas(nombre_carpeta)
                     audio = threading.Thread(target=grabar_audio, args=(carpeta, nombre_archivo, url, duracion_total))
                     audio.start()
@@ -129,6 +131,8 @@ def programa_principal():
         else:
             print('No es el momento')
 
+    print(hora)
+
 #print(programa_principal())
 programa_principal()
 
@@ -139,13 +143,15 @@ def transcribe_file():
     from google.cloud.speech import types
     client = speech.SpeechClient()
 
-    speech_file = '/home/eparionad/Descargas/18-02-2018/JuninInformado/3-JuninInformado-18-02-18-15:10.flac'
+    #speech_file = 'gs://audiosparareconocimiento/1-Tusnoticias-09-03-18-08:51.flac'
+    gcs_uri = 'gs://audiosparareconocimiento/1-Tusnoticias-09-03-18-08:51.flac'
 
     # [START migration_async_request]
-    with io.open(speech_file, 'rb') as audio_file:
-        content = audio_file.read()
+    #with io.open(speech_file, 'rb') as audio_file:
+        #content = audio_file.read()
 
-    audio = types.RecognitionAudio(content=content)
+    #audio = types.RecognitionAudio(content=content)
+    audio = types.RecognitionAudio(uri=gcs_uri)
     config = types.RecognitionConfig(
         encoding=enums.RecognitionConfig.AudioEncoding.FLAC,
         sample_rate_hertz=16000,
@@ -156,7 +162,7 @@ def transcribe_file():
     # [END migration_async_request]
 
     print('Waiting for operation to complete...')
-    response = operation.result(timeout=90)
+    response = operation.result(timeout=900)
 
     # Each result is for a consecutive portion of the audio. Iterate through
     # them to get the transcripts for the entire audio file.
@@ -167,6 +173,34 @@ def transcribe_file():
         #print('Transcript: {}'.format(result.alternatives[0].transcript))
     # [END migration_async_response]
 # [END def_transcribe_file]
+
+def contar_palabras():
+
+    claves = []
+    valores = []
+    palabras_filtradas = []
+
+    with open('/home/eparionad/Descargas/texto/audio.txt') as archivo:
+        texto = archivo.read()
+        palabras = texto.split()
+        #contar = collections.Counter(palabras)
+
+        for palabra in palabras:
+            sin_tilde = ''.join((c for c in unicodedata.normalize('NFD',palabra) if unicodedata.category(c) != 'Mn'))
+            palabras_filtradas += [sin_tilde.lower()]
+
+        contar = collections.Counter(palabras_filtradas)
+
+        for clave, valor in contar.items():
+            if len(clave) >= 4:
+                claves += [clave]
+                valores += [valor]
+
+    palabras_encontradas = dict(zip(claves, valores))
+    print(palabras_encontradas)
+
+print(contar_palabras())
+
 
 def enviar_audio():
 
@@ -180,7 +214,7 @@ def enviar_audio():
         nc = dato.nombre
         programa = nc.replace(' ', '')
 
-        ruta_total = os.path.join(ruta_parcial, '18-02-2018', programa)
+        ruta_total = os.path.join(ruta_parcial, '09-03-2018', programa)
 
         for carpetas in os.walk(ruta_total):
             for carpeta in carpetas:
@@ -189,7 +223,7 @@ def enviar_audio():
                         nombre = archivos.replace('flac', 'txt')
                         #print(nombre)
                         if not os.path.exists(os.path.join(ruta_total,nombre)):
-                            audio_grabado = transcribe_file()
+                            #audio_grabado = transcribe_file()
                             print('LLamo a la funcion')
 
                         else:
