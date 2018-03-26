@@ -147,16 +147,8 @@ def transcribe_file():
     gcs_uri = 'gs://audiosparareconocimiento/1-Tusnoticias-09-03-18-08:51.flac'
 
     # [START migration_async_request]
-    #with io.open(speech_file, 'rb') as audio_file:
-        #content = audio_file.read()
-
-    #audio = types.RecognitionAudio(content=content)
-
-    #gcs_uri = 'gs://audiosparareconocimiento/1-Tusnoticias-23-02-18-07:52.flac'
-
-    # [START migration_async_request]
-    #with io.open(speech_file, 'rb') as audio_file:
-    #    content = audio_file.read()
+    """with io.open(speech_file, 'rb') as audio_file:
+        content = audio_file.read()"""
 
     audio = types.RecognitionAudio(uri=gcs_uri)
     config = types.RecognitionConfig(
@@ -196,7 +188,6 @@ def contar_palabras():
     with open('/home/eparionad/Descargas/texto/audio.txt') as archivo:
         texto = archivo.read()
         palabras = texto.split()
-        #contar = collections.Counter(palabras)
 
         for palabra in palabras:
             sin_tilde = ''.join((c for c in unicodedata.normalize('NFD',palabra) if unicodedata.category(c) != 'Mn'))
@@ -229,9 +220,6 @@ def enviar_audio():
         programa = nc.replace(' ', '')
 
         ruta_total = os.path.join(ruta_parcial, '09-03-2018', programa)
-
-        #ruta_total = os.path.join(ruta_parcial, '19-02-2018', programa)
-
 
         for carpetas in os.walk(ruta_total):
             for carpeta in carpetas:
