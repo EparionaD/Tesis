@@ -201,6 +201,12 @@ def contar_palabras():
                 valores += [valor]
 
     palabras_encontradas = dict(zip(claves, valores))
+    with open('/home/eparionad/Descargas/texto/palabras.csv', 'a') as csv:
+        csv.write('Palabras,Cantidad\n')
+
+        for palabra, cantidad in palabras_encontradas.items():
+            csv.write('%s,%s\n' % (palabra,cantidad))
+
     print(palabras_encontradas)
 
 print(contar_palabras())
