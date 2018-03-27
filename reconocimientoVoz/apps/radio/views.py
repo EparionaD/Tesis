@@ -190,10 +190,15 @@ def contar_palabras():
         palabras = texto.split()
 
         for palabra in palabras:
-            sin_tilde = ''.join((c for c in unicodedata.normalize('NFD',palabra) if unicodedata.category(c) != 'Mn'))
-            palabras_filtradas += [sin_tilde.lower()]
+            #sin_tilde = ''.join((c for c in unicodedata.normalize('NFD',palabra) if unicodedata.category(c) != 'Mn'))
+            palabras_filtradas += [palabra.lower()]
 
         contar = collections.Counter(palabras_filtradas)
+        borrar = ['como','supo','casi','esta']
+
+        for clave in list(contar.keys()):
+            if clave in borrar:
+                del contar[clave]
 
         for clave, valor in contar.items():
             if len(clave) >= 4:
