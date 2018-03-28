@@ -11,7 +11,6 @@ import io
 import threading
 import fnmatch
 import collections
-import unicodedata
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = '/home/eparionad/Dropbox/Tesis/CredencialesApiGoogle/Tesis-59cc7659afbc.json'
 
@@ -181,8 +180,6 @@ def transcribe_file():
 
 def contar_palabras():
 
-    claves = []
-    valores = []
     palabras_filtradas = []
 
     with open('/home/eparionad/Descargas/texto/audio.txt') as archivo:
@@ -194,25 +191,21 @@ def contar_palabras():
             palabras_filtradas += [palabra.lower()]
 
         contar = collections.Counter(palabras_filtradas)
-        borrar = ['como','supo','casi','esta']
+        borrar = ['como','supo','casi','esta','cómo','todo','toda','cual','cuál','este','esta','esto','tanto','alla','allá',
+        'caso','todos','todas','estos','pero','sabes','hizo','hace','hacer','sino','paso','pasó','solo','sólo','para','porque',
+        'tiene','está','pues','algo','desde','también','tienen','debe','tener','aqui','aquí','sera','será','buen']
 
         for clave in list(contar.keys()):
-            if clave in borrar:
+            if clave in borrar or len(clave) < 4:
                 del contar[clave]
 
-        for clave, valor in contar.items():
-            if len(clave) >= 4:
-                claves += [clave]
-                valores += [valor]
-
-    palabras_encontradas = dict(zip(claves, valores))
     with open('/home/eparionad/Descargas/texto/palabras.csv', 'a') as csv:
         csv.write('Palabras,Cantidad\n')
 
-        for palabra, cantidad in palabras_encontradas.items():
+        for palabra, cantidad in contar.items():
             csv.write('%s,%s\n' % (palabra,cantidad))
 
-    print(palabras_encontradas)
+    print(contar)
 
 print(contar_palabras())
 
